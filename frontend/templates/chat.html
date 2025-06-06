@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Chat with Daixtabot</h2>
+<form id="chat-form">
+    <input id="message" class="form-control" placeholder="Enter message"><br>
+    <button class="btn btn-info">Send</button>
+</form>
+<div id="chat-box" class="mt-3"></div>
+<script>
+document.getElementById("chat-form").onsubmit = async function(e) {
+    e.preventDefault();
+    const message = document.getElementById("message").value;
+    const res = await fetch("/chat/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + localStorage.getItem("token")
+        },
+        body: JSON.stringify({message})
+    });
+    const data = await res.json();
+    document.getElementById("chat-box").innerHTML += `<b>You:</b> ${data.message}<br><b>Bot:</b> ${data.response}<hr>`;
+    document.getElementById("message").value = "";
+}
+</script>
+{% endblock %}
